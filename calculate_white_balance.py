@@ -6,15 +6,17 @@ import sys
 ### Functions
 
 def select_center_image(image_original):
-    lenght_width = image_original.shape[1]/10
-    length_height = image_original.shape[0]/10
-    center = (image_original.shape[0]/2, image_original.shape[1]/2)
-    image_center = image_original[int(center[0] - length_height):int(center[0] + length_height), int(center[1] - lenght_width):int(center[1] + lenght_width)]
-    return image_center
+    r = cv2.selectROI("ROI Selector", image_original, fromCenter=False)
+    cv2.destroyAllWindows()
+    image_cropped = image_original[int(r[1]):int(r[1]+r[3]), int(r[0]):int(r[0]+r[2])]
+    cv2.imshow("Image Cropped", image_cropped)
+    cv2.waitKey(0)
+    cv2.destroyAllWindows()
+    return image_cropped
 
 def print_ratios_from_mean_pixels(image, max_value_intesity):
-    ratios = [np.mean((image[:,:,1]/max_value_intesity)/(image[:,:,i]/max_value_intesity)) for i in range(0,3)]
-    print(f"Ratio B/G: {ratios[0]}\nRatio G/G: {ratios[1]}\nRatio R/G: {ratios[2]}")
+    ratios = [np.mean((image[:,:,1])/(image[:,:,i])) for i in range(0,3)]
+    print(f"Ratio G/B: {ratios[0]}\nRatio G/G: {ratios[1]}\nRatio G/R: {ratios[2]}")
     return
 
 def show_evolution_width_image_and_ratio_from_width(image, max_value_intesity):
@@ -55,6 +57,7 @@ def main():
     image_center = select_center_image(image)
     print_ratios_from_mean_pixels(image_center, max_value_intesity)
     if sys.argv[2] == "True":
+        print("Displaying the ratio not working for now. Segmentation fault.")
         show_evolution_width_image_and_ratio_from_width(image_center, max_value_intesity)
 
 if __name__ == "__main__":
