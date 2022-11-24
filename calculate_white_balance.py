@@ -42,6 +42,12 @@ def show_evolution_width_image_and_ratio_from_width(image, ratios, value_max_cha
     plt.savefig("ratio_along_width.png")
     return
 
+def save_modified_image(img, values):
+    for i in range(3):
+        img[:,:,i] = img[:,:,i]*values[i]
+        cv2.imwrite("img_after_wb.png",img)
+    return
+
 
 def main():
     max_value = 255 #8 bits
@@ -57,6 +63,7 @@ def main():
     ratios = print_ratios_from_mean_pixels(image_center)
     if sys.argv[2] == "True":
         show_evolution_width_image_and_ratio_from_width(image_center, ratios, max_value)
+        save_modified_image(image, ratios)
 
 if __name__ == "__main__":
     main()
